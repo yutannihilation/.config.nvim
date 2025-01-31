@@ -46,6 +46,7 @@ vim.keymap.set('n', '<leader>fb', telescope_builtin.buffers, { desc = 'Telescope
 vim.keymap.set('n', '<leader>fh', telescope_builtin.oldfiles, { desc = 'Telescope history' })
 
 vim.keymap.set('n', '<C-p>', telescope.extensions.project.project, { desc = 'Telescope project' })
+vim.keymap.set('n', '<leader>p', telescope.extensions.yank_history.yank_history, { desc = 'Open Yank History' })
 
 -- coc
 -- https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.lua
@@ -63,11 +64,36 @@ end
 -- no select by setting `'suggest.noselect': true` in your configuration file
 -- NOTE: Use command ':verbose imap <tab>' to make sure Tab is not mapped by
 -- other plugins before putting this into your config
-local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
+local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
 vim.keymap.set('i', '<TAB>', 'coc#pum#visible() ? coc#pum#next(1) : v:lua.check_back_space() ? "<TAB>" : coc#refresh()', opts)
 vim.keymap.set('i', '<S-TAB>', [[coc#pum#visible() ? coc#pum#prev(1) : '\<C-h>']], opts)
 
 -- Make <CR> to accept selected completion item or notify coc.nvim to format
 -- <C-g>u breaks current undo, please make your own choice
-vim.keymap.set('i', '<cr>', [[coc#pum#visible() ? coc#pum#confirm() : '\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>']], opts)
+vim.keymap.set('i', '<cr>', [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
 
+-- Use `[g` and `]g` to navigate diagnostics
+-- Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+vim.keymap.set('n', '[g', '<Plug>(coc-diagnostic-prev)', { silent = true })
+vim.keymap.set('n', ']g', '<Plug>(coc-diagnostic-next)', { silent = true })
+
+-- GoTo code navigation
+vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', { silent = true })
+vim.keymap.set('n', 'gy', '<Plug>(coc-type-definition)', { silent = true })
+vim.keymap.set('n', 'gi', '<Plug>(coc-implementation)', { silent = true })
+vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })
+
+-- Highlight the symbol and its references on a CursorHold event(cursor is idle)
+vim.api.nvim_create_augroup('CocGroup', {})
+vim.api.nvim_create_autocmd('CursorHold', {
+  group = 'CocGroup',
+  command = "silent call CocActionAsync('highlight')",
+  desc = 'Highlight symbol under cursor on CursorHold'
+})
+
+-- Symbol renaming
+vim.keymap.set('n', '<leader>rn', '<Plug>(coc-rename)', { silent = true })
+
+-- Formatting selected code
+vim.keymap.set('x', '<leader>f', '<Plug>(coc-format-selected)', { silent = true })
+vim.keymap.set('n', '<leader>f', '<Plug>(coc-format-selected)', { silent = true })
