@@ -53,6 +53,10 @@ require("lazy").setup({
     --
     { "neoclide/coc.nvim", branch = "release", build = "coc#util#install()" },
     --
+    -- Yank history
+    --
+    { "gbprod/yanky.nvim", opts = {} },
+    --
     -- other plugins
     --
     { import = "plugins" },
